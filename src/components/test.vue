@@ -36,11 +36,13 @@
 
               <p class="rightPageContentGrey" id="rightPageContentLoginEmailfield">E-Mail</p>
               <input
+                @blur="validOrInvalid"
+                v-model="email"
                 class="rightPageContentInputfield"
                 type="text"
                 placeholder
                 required
-                id="password"
+                id="email"
               />
               <p class="rightPageContentGrey">Passwort</p>
               <input
@@ -50,6 +52,7 @@
                 type="password"
                 placeholder
                 required
+                id="passwort"
               />
               <br />
               <button
@@ -81,7 +84,13 @@
               <p class="rightPageContentGrey">Nachname</p>
               <input class="rightPageContentInputfield" type="text" placeholder required />
               <p class="rightPageContentGrey">E-Mail</p>
-              <input class="rightPageContentInputfield" type="text" placeholder required />
+              <input
+                v-model="email"
+                class="rightPageContentInputfield"
+                type="text"
+                placeholder
+                required
+              />
               <p class="rightPageContentGrey">Passwort</p>
               <input
                 v-on:input="passwordStrongTestCreate"
@@ -101,7 +110,11 @@
                 required
               />
               <br />
-              <button :disabled="this.passwordStrong != true" class="rightPageContentLoginbutton" style="width: 304px;">REGISTRIEREN</button>
+              <button
+                :disabled="this.passwordStrong != true"
+                class="rightPageContentLoginbutton"
+                style="width: 304px;"
+              >REGISTRIEREN</button>
 
               <p class="rightPageContentText">
                 Du hast schon einen Account?
@@ -149,7 +162,7 @@ export default {
       regexPassword: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
       regexEmail: /^\S+@\S+\.\S+$/,
       passwordStrong: false,
-      emailStrong: false,
+      emailStrong: false
     };
   },
   methods: {
@@ -209,11 +222,14 @@ export default {
         this.passwordStrong = false;
       }
     },
-    emailLegitTest(){
-      if(this.regexEmail.test(this.email)){
-        this.emailStrong = true;
-      } else{
-        this.emailStrong = false;
+
+    validOrInvalid() {
+      if (this.regexEmail.test(this.email)) {
+        document.getElementById("email").classList.add("inputValid");
+        document.getElementById("email").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("email").classList.add("inputInvalid");
+        document.getElementById("email").classList.remove("inputValid");
       }
     }
   }
@@ -314,16 +330,6 @@ export default {
   position: relative;
   top: 3px;
   cursor: pointer;
-}
-
-input:focus,
-input:valid {
-  border-color: #0044b2;
-  transition: ease-in-out 0.5s;
-}
-.validInput {
-  border-color: red;
-  transition: ease-in-out 0.5s;
 }
 
 .rightPageContentLogo {
@@ -448,5 +454,14 @@ input[name="r"] {
 a {
   text-decoration: none;
   color: #eee;
+}
+
+.inputValid {
+  border-color: #0044b2;
+  transition: ease-in-out 0.5s;
+}
+.inputInvalid {
+  border-color: #cc0000;
+  transition: ease-in-out 0.5s;
 }
 </style>
