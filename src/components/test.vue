@@ -123,7 +123,12 @@
                 placeholder
                 required
                 id="password2"
+<<<<<<< HEAD
                 @blur="validOrInvalidPasswordCreate2"
+=======
+                                @blur="validOrInvalidPasswordCreate2"
+
+>>>>>>> master
               />
               <br />
               <button
@@ -209,8 +214,12 @@ export default {
       passwordStrong: false,
       passwordStrongCreate: false,
       emailStrong: false,
+<<<<<<< HEAD
       nameValid: false,
       passwordSafety: false
+=======
+      nameValid: false
+>>>>>>> master
     };
   },
   methods: {
@@ -329,6 +338,7 @@ export default {
         document.getElementById("password2").classList.add("inputInvalid");
         document.getElementById("password2").classList.remove("inputValid");
       }
+<<<<<<< HEAD
     },
     showPasswordSafety() {
       document
@@ -343,6 +353,8 @@ export default {
         .classList.remove("showPasswordSafety");
       document.getElementById("blurDiv").classList.remove("blurBackground");
       document.getElementById("logo").classList.remove("blurBackground");
+=======
+>>>>>>> master
     }
   }
 };
