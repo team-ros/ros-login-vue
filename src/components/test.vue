@@ -36,7 +36,7 @@
 
               <p class="rightPageContentGrey" id="rightPageContentLoginEmailfield">E-Mail</p>
               <input
-                @blur="validOrInvalid"
+                @blur="validOrInvalidEmail"
                 v-model="email"
                 class="rightPageContentInputfield"
                 type="text"
@@ -46,13 +46,14 @@
               />
               <p class="rightPageContentGrey">Passwort</p>
               <input
+                @blur="validOrInvalidPassword"
                 v-on:input="passwordStrongTestLogin"
                 v-model="passwordlogin"
                 class="rightPageContentInputfield"
                 type="password"
                 placeholder
                 required
-                id="passwort"
+                id="password"
               />
               <br />
               <button
@@ -79,17 +80,25 @@
               <h1>Willkommen!</h1>
               <br />
 
-              <p class="rightPageContentGrey">Vorname</p>
-              <input class="rightPageContentInputfield" type="text" placeholder required />
-              <p class="rightPageContentGrey">Nachname</p>
-              <input class="rightPageContentInputfield" type="text" placeholder required />
-              <p class="rightPageContentGrey">E-Mail</p>
+              <p class="rightPageContentGrey">Name</p>
               <input
-                v-model="email"
+                v-model="name"
+                id="name"
                 class="rightPageContentInputfield"
                 type="text"
                 placeholder
                 required
+                @blur="validOrInvalidName"
+              />
+              <p class="rightPageContentGrey">E-Mail</p>
+              <input
+                @blur="validOrInvalidEmailCreate"
+                v-model="emailCreate"
+                class="rightPageContentInputfield"
+                type="text"
+                placeholder
+                required
+                id="emailCreate"
               />
               <p class="rightPageContentGrey">Passwort</p>
               <input
@@ -99,6 +108,8 @@
                 type="password"
                 placeholder
                 required
+                id="password1"
+                @blur="validOrInvalidPasswordCreate1"
               />
               <p class="rightPageContentGrey">Passwort wiederholen</p>
               <input
@@ -108,10 +119,13 @@
                 type="password"
                 placeholder
                 required
+                id="password2"
+                                @blur="validOrInvalidPasswordCreate2"
+
               />
               <br />
               <button
-                :disabled="this.passwordStrong != true"
+                :disabled="this.passwordStrongCreate != true"
                 class="rightPageContentLoginbutton"
                 style="width: 304px;"
               >REGISTRIEREN</button>
@@ -159,10 +173,15 @@ export default {
       password1: "",
       password2: "",
       email: "",
+      emailCreate: "",
+      name: "",
       regexPassword: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
       regexEmail: /^\S+@\S+\.\S+$/,
+      regexName: /^[a-z ,.'-]+$/i,
       passwordStrong: false,
-      emailStrong: false
+      passwordStrongCreate: false,
+      emailStrong: false,
+      nameValid: false
     };
   },
   methods: {
@@ -216,20 +235,70 @@ export default {
       }
     },
     passwordStrongTestCreate() {
-      if (this.regexPassword.test(this.password1 == this.password2)) {
-        this.passwordStrong = true;
+      if (
+        this.regexPassword.test(this.password1) &&
+        this.regexPassword.test(this.password2)
+      ) {
+        this.passwordStrongCreate = true;
+        console.log("true");
       } else {
-        this.passwordStrong = false;
+        this.passwordStrongCreate = false;
+        console.log("false");
       }
     },
 
-    validOrInvalid() {
+    validOrInvalidEmail() {
       if (this.regexEmail.test(this.email)) {
         document.getElementById("email").classList.add("inputValid");
         document.getElementById("email").classList.remove("inputInvalid");
       } else {
         document.getElementById("email").classList.add("inputInvalid");
         document.getElementById("email").classList.remove("inputValid");
+      }
+    },
+    validOrInvalidPassword() {
+      if (this.regexPassword.test(this.passwordlogin)) {
+        document.getElementById("password").classList.add("inputValid");
+        document.getElementById("password").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("password").classList.add("inputInvalid");
+        document.getElementById("password").classList.remove("inputValid");
+      }
+    },
+    validOrInvalidName() {
+      if (this.regexName.test(this.name)) {
+        document.getElementById("name").classList.add("inputValid");
+        document.getElementById("name").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("name").classList.add("inputInvalid");
+        document.getElementById("name").classList.remove("inputValid");
+      }
+    },
+    validOrInvalidEmailCreate() {
+      if (this.regexName.test(this.name)) {
+        document.getElementById("emailCreate").classList.add("inputValid");
+        document.getElementById("emailCreate").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("emailCreate").classList.add("inputInvalid");
+        document.getElementById("emailCreate").classList.remove("inputValid");
+      }
+    },
+    validOrInvalidPasswordCreate1() {
+      if (this.regexPassword.test(this.password1)) {
+        document.getElementById("password1").classList.add("inputValid");
+        document.getElementById("password1").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("password1").classList.add("inputInvalid");
+        document.getElementById("password1").classList.remove("inputValid");
+      }
+    },
+    validOrInvalidPasswordCreate2() {
+      if (this.regexPassword.test(this.password2)) {
+        document.getElementById("password2").classList.add("inputValid");
+        document.getElementById("password2").classList.remove("inputInvalid");
+      } else {
+        document.getElementById("password2").classList.add("inputInvalid");
+        document.getElementById("password2").classList.remove("inputValid");
       }
     }
   }
@@ -411,7 +480,10 @@ input[name="r"] {
   height: 100%;
   object-fit: contain;
 }
-
+h1 {
+  margin-bottom: 0;
+  text-align: center;
+}
 #r1:checked ~ .s1 {
   margin-left: 0;
 }
