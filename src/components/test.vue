@@ -28,8 +28,8 @@
           </div>
         </div>
         <div class="rightPage" id="rightPage">
-          <div id="logo" > 
-          <img src="@/assets/ros-logo.png" class="rightPageContentLogo" />
+          <div id="logo">
+            <img src="@/assets/ros-logo.png" class="rightPageContentLogo" />
           </div>
           <div class="rightPageContent">
             <div class="loginActive" id="rightPageContentLogin">
@@ -61,8 +61,9 @@
               <button
                 :disabled="this.passwordStrong != true"
                 class="rightPageContentLoginbutton"
+                @click="regularLogin"
               >LOGIN</button>
-              <button @click="oauthLogin()" value="G+" class="rightPageContentGooglebutton">
+              <button @click="oauthLogin" value="G+" class="rightPageContentGooglebutton">
                 <i class="fa fa-google-plus" style="color: #db4a39; font-size: 26px"></i>
               </button>
               <p class="rightPageContentText">
@@ -80,67 +81,67 @@
 
             <div class="registerInactive" id="rightPageContentRegister">
               <div id="blurDiv">
-              <h1>Willkommen!</h1>
-              <br />
+                <h1>Willkommen!</h1>
+                <br />
 
-              <p class="rightPageContentGrey">Name</p>
-              <input
-                v-model="name"
-                id="name"
-                class="rightPageContentInputfield"
-                type="text"
-                placeholder
-                required
-                @blur="validOrInvalidName"
-              />
-              <p class="rightPageContentGrey">E-Mail</p>
-              <input
-                @blur="validOrInvalidEmailCreate"
-                v-model="emailCreate"
-                class="rightPageContentInputfield"
-                type="text"
-                placeholder
-                required
-                id="emailCreate"
-              />
-              <p class="rightPageContentGrey">Passwort</p>
-              <input
-                v-on:input="passwordStrongTestCreate"
-                class="rightPageContentInputfield"
-                v-model="password1"
-                type="password"
-                placeholder
-                required
-                id="password1"
-                @blur="validOrInvalidPasswordCreate1"
-              />
-              <p class="rightPageContentGrey">Passwort wiederholen</p>
-              <input
-                v-on:input="passwordStrongTestCreate"
-                class="rightPageContentInputfield"
-                v-model="password2"
-                type="password"
-                placeholder
-                required
-                id="password2"
-                @blur="validOrInvalidPasswordCreate2"
-              />
-              <br />
-              <button
-                :disabled="this.passwordStrongCreate != true"
-                class="rightPageContentLoginbutton"
-                style="width: 304px;"
-              >REGISTRIEREN</button>
+                <p class="rightPageContentGrey">Name</p>
+                <input
+                  v-model="name"
+                  id="name"
+                  class="rightPageContentInputfield"
+                  type="text"
+                  placeholder
+                  required
+                  @blur="validOrInvalidName"
+                />
+                <p class="rightPageContentGrey">E-Mail</p>
+                <input
+                  @blur="validOrInvalidEmailCreate"
+                  v-model="emailCreate"
+                  class="rightPageContentInputfield"
+                  type="text"
+                  placeholder
+                  required
+                  id="emailCreate"
+                />
+                <p class="rightPageContentGrey">Passwort</p>
+                <input
+                  v-on:input="passwordStrongTestCreate"
+                  class="rightPageContentInputfield"
+                  v-model="password1"
+                  type="password"
+                  placeholder
+                  required
+                  id="password1"
+                  @blur="validOrInvalidPasswordCreate1"
+                />
+                <p class="rightPageContentGrey">Passwort wiederholen</p>
+                <input
+                  v-on:input="passwordStrongTestCreate"
+                  class="rightPageContentInputfield"
+                  v-model="password2"
+                  type="password"
+                  placeholder
+                  required
+                  id="password2"
+                  @blur="validOrInvalidPasswordCreate2"
+                />
+                <br />
+                <button
+                  :disabled="this.passwordStrongCreate != true"
+                  class="rightPageContentLoginbutton"
+                  style="width: 304px;"
+                >REGISTRIEREN</button>
 
-              <p class="rightPageContentText">
-                Du hast schon einen Account?
-                <span
-                  style="color:#002c6b; cursor: pointer;"
-                  id="loginAccountButton"
-                  @click="loginSwitch()"
-                >Zum Login!</span>
-              </p>
-            </div>
+                <p class="rightPageContentText">
+                  Du hast schon einen Account?
+                  <span
+                    style="color:#002c6b; cursor: pointer;"
+                    id="loginAccountButton"
+                    @click="loginSwitch()"
+                  >Zum Login!</span>
+                </p>
+              </div>
               <div class="passwordSafety" id="passwordSafety">
                 <p style="margin-top:0">
                   Aufgrund der Sicherheit Ihrere Daten stellen wir folgende
@@ -194,6 +195,36 @@
 </template>
 
 <script>
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import { API } from "ros-sdk-js";
+
+// initialize the API class with the API endpoint URL in the constructor
+const api = new API("http://localhost:8080/user/authenticate");
+const firebaseConfig = {
+  apiKey: "AIzaSyBTEaBrtxi329vwEvYUlAl4pKEk9XJ9PjY",
+  authDomain: "ros-cloud-cc711.firebaseapp.com",
+  databaseURL: "https://ros-cloud-cc711.firebaseio.com",
+  projectId: "ros-cloud-cc711",
+  storageBucket: "ros-cloud-cc711.appspot.com",
+  messagingSenderId: "175713596436",
+  appId: "1:175713596436:web:72844d2b29a01ebaa76301",
+  measurementId: "G-ZZXD7PLMCP"
+};
+firebase.initializeApp(firebaseConfig);
+const GoogleProvider = new firebase.auth.GoogleAuthProvider();
+GoogleProvider.addScope("profile");
+GoogleProvider.addScope("email");
+firebase.auth().useDeviceLanguage();
+
+// temporarily store the JWT Token in LocalStorage
+api.storeToken("<JWT-TOKEN>");
+
+/*
+
+API methods ...
+
+*/
 export default {
   data: function() {
     return {
@@ -335,14 +366,27 @@ export default {
         .getElementById("passwordSafety")
         .classList.add("showPasswordSafety");
       document.getElementById("blurDiv").classList.add("blurBackground");
-      document.getElementById('logo').classList.add("blurBackground");
+      document.getElementById("logo").classList.add("blurBackground");
     },
-    leavePasswordSafety(){
+    leavePasswordSafety() {
       document
         .getElementById("passwordSafety")
         .classList.remove("showPasswordSafety");
       document.getElementById("blurDiv").classList.remove("blurBackground");
       document.getElementById("logo").classList.remove("blurBackground");
+    },
+    oauthLogin() {
+      firebase.auth().signInWithPopup(GoogleProvider);
+    },
+    loginTrue() {},
+    regularLogin() {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.passwordlogin)
+        .then(() => {
+          this.loginTrue();
+          firebase.auth().currentUser.getIdToken().then(result => {console.log(result)})
+        });
     }
   }
 };
@@ -597,10 +641,10 @@ a {
 }
 .blurBackground {
   transition: 0.3s filter linear;
--webkit-transition: 0.3s -webkit-filter linear;
--moz-transition: 0.3s -moz-filter linear;
--ms-transition: 0.3s -ms-filter linear;
--o-transition: 0.3s -o-filter linear;
+  -webkit-transition: 0.3s -webkit-filter linear;
+  -moz-transition: 0.3s -moz-filter linear;
+  -ms-transition: 0.3s -ms-filter linear;
+  -o-transition: 0.3s -o-filter linear;
   -webkit-filter: blur(3px);
   -moz-filter: blur(3px);
   -o-filter: blur(3px);
